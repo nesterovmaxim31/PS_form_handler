@@ -1,0 +1,35 @@
+# Automake variables
+CC:=@CC@
+CFLAGS:=@CFLAGS@
+
+# Project files
+SRCS := psform.c
+SRCSDIR := src
+OBJS :=$(SRCS:.c=.o)
+VPATH := src
+EXE := prog
+
+.PHONY: all clean remake test
+
+# Built executable 
+$(EXE): $(OBJS)
+	$(CC) $(CFLAGS) -o $(EXE) $^
+
+# Built object files
+$(SRCSDIR)/psform.o: psform.c psform.h parser.h psform_arithmetic.h
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+# Rebuild project 
+remake: clean distclean $(EXE)
+
+# Start tests
+test:
+	echo "Tests"
+
+# Full cleanup of directory
+distclean: clean
+	rm -rf autom4te.cache Makefile config.* configure
+
+# Cleanup of object files and executable
+clean:
+	rm -f $(EXE) $(SRCSDIR)/$(OBJS)
