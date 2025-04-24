@@ -3,9 +3,9 @@ CC:=@CC@
 CFLAGS:=@CFLAGS@
 
 # Project files
-SRCS := psform.c
+SRCS := psform.c parser.c
 SRCSDIR := src
-OBJS :=$(SRCS:.c=.o)
+OBJS :=$(addprefix $(SRCSDIR)/, $(SRCS:.c=.o))
 VPATH := src
 EXE := prog
 
@@ -16,8 +16,12 @@ $(EXE): $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXE) $^
 
 # Built object files
+$(SRCSDIR)/parser.o: parser.c parser.h
+	$(CC) -c $(CFLAGS) -o $@ $<
+
 $(SRCSDIR)/psform.o: psform.c psform.h parser.h psform_arithmetic.h
 	$(CC) -c $(CFLAGS) -o $@ $<
+
 
 # Rebuild project 
 remake: clean distclean $(EXE)
@@ -32,4 +36,4 @@ distclean: clean
 
 # Cleanup of object files and executable
 clean:
-	rm -f $(EXE) $(SRCSDIR)/$(OBJS)
+	rm -f $(EXE) $(OBJS)

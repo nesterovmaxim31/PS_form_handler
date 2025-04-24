@@ -15,13 +15,13 @@ dnl Check for included default C libraries
 AC_CHECK_INCLUDES_DEFAULT
 
 dnl CFLAGS
-CFLAGS="$CFLAGS -march=native -mtune=native -Wall -fsigned-char"  
+CFLAGS="-march=native -mtune=native -Wall -fsigned-char -std=gnu11"  
 
 dnl Check for debug flag
 AC_ARG_ENABLE([debug],
   [AS_HELP_STRING([--enable-debug],
                   [whether to include debug symbols (default is no)])],
-  [CFLAGS="$CFLAGS -g0 -O0"],
+  [CFLAGS="$CFLAGS -g -O0"],
   [CFLAGS="$CFLAGS -O3"]
 )
 
