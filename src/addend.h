@@ -12,12 +12,14 @@ typedef enum {POSITIVE, NEGATIVE} sign_t;
 
 typedef struct addend_st{
   sign_t sign;
-  size_t size;
+  size_t size; /* Amount of multiplicand */
   multiplicand_t* elements;
   struct addend_st* next;
 } addend_t;
 
 /* function prototype */
+addend_t* init_addend(); /* Create new empty addend */
+void add_addend(addend_t*, addend_t*); /* Add new addend to list */
 
 
 #endif

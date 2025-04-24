@@ -3,11 +3,16 @@ CC:=@CC@
 CFLAGS:=@CFLAGS@
 
 # Project files
-SRCS := psform.c parser.c
+SRCS := psform.c parser.c multiplicand.c addend.c
 SRCSDIR := src
 OBJS :=$(addprefix $(SRCSDIR)/, $(SRCS:.c=.o))
 VPATH := src
 EXE := prog
+
+# Test files
+TESTDIR := test
+TESTS := ./$(TESTDIR)/input_*.txt
+TESTSOUT := $(subst input,output,$(wildcard ./$(TESTDIR)/input_*.txt))
 
 .PHONY: all clean remake test
 
@@ -16,19 +21,26 @@ $(EXE): $(OBJS)
 	$(CC) $(CFLAGS) -o $(EXE) $^
 
 # Built object files
-$(SRCSDIR)/parser.o: parser.c parser.h
+$(SRCSDIR)/parser.o: parser.c parser.h addend.h
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 $(SRCSDIR)/psform.o: psform.c psform.h parser.h psform_arithmetic.h
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+$(SRCSDIR)/addend.o: addend.c addend.h multiplicand.h
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+$(SRCSDIR)/multiplicand.o: multiplicand.c multiplicand.h 
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Rebuild project 
-remake: clean distclean $(EXE)
+remake: clean $(EXE)
 
 # Start tests
-test:
-	echo "Tests"
+test: remake $(TESTSOUT)
+
+$(TESTDIR)/output_%.txt: $(TESTDIR)/input_%.txt
+	./$(EXE) < $^ > $@
 
 # Full cleanup of directory
 distclean: clean
@@ -36,4 +48,4 @@ distclean: clean
 
 # Cleanup of object files and executable
 clean:
-	rm -f $(EXE) $(OBJS)
+	rm -f $(EXE) $(OBJS) $(TESTSOUT)

@@ -10,7 +10,7 @@ typedef enum  {CONSTANT, VARIABLE} multiplicand_type;
    if multiplicand is constant, it's value is a constant's value */
 typedef union {
   char name;
-  int val;
+  int value;
 } multiplicand_value_t;
 
 /* Each multiplicand consists of it's value, type and
@@ -22,6 +22,12 @@ typedef struct multiplicand_st{
 } multiplicand_t;
 
 /* function prototype */
-
-
+multiplicand_t* create_var_multiplicand(char); /* Create variable
+												  multiplicand*/
+multiplicand_t* create_con_multiplicand(int); /* Create constant
+												  multiplicand */
+void add_multiplicand(multiplicand_t*, multiplicand_t*); /* Add
+												new multiplicand in list */ 
+void free_multiplicands_list(multiplicand_t*); /* Recursively free
+												  all elements in list */
 #endif
