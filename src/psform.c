@@ -85,7 +85,7 @@ int main() {
 	psform_print(psform_result);
 	break;
   case DIVISION: {
-	psform_result = psform_multiply(psform_a, psform_b);
+	psform_result = psform_divide(psform_a, psform_b);
 	if (psform_result == NULL)
 	  printf("error");
 	else

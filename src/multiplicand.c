@@ -50,7 +50,10 @@ void free_multiplicands_list(multiplicand_t* leading) {
 
 /* Copy multiplicands list */
 multiplicand_t* copy_multiplicands_list(multiplicand_t* list) {
-  multiplicand_t *copy = NULL, *result;
+  multiplicand_t *copy = NULL, *result = NULL;
+
+  if (list == NULL)
+	return result;
 
   do {
 	if (list->type == CONSTANT) {
@@ -144,4 +147,85 @@ void print_multiplicands_list(multiplicand_t* multiplicand, char* line) {
 
 	multiplicand = multiplicand->next;
   }
+}
+
+
+/* Allocate new multiplicand list, and add here elements from
+   list a, that aren't represented in list b. If list b isn't empty
+   by the end. Return NULL, because it means divisor is uncorrect */
+multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor, \
+					   size_t divisor_length) {
+  multiplicand_t *result = NULL, *_divisor, *multiplicand;
+  int *indexs = (int*)calloc(divisor_length, sizeof(int)), found, \
+	constant_divisor, constant_dividend;
+  _divisor = divisor;
+
+  /* Handle constants */
+  if (dividend->type == CONSTANT) {
+	constant_dividend = dividend->value.value;
+	dividend = dividend->next;
+  }
+  else {
+	constant_dividend = 1;
+  }
+
+  if (divisor->type == CONSTANT) {
+	constant_divisor = divisor->value.value;
+	divisor = divisor->next;
+	indexs[0] = 1;
+  }
+  else {
+	constant_divisor = 1;
+  }
+
+  /* If constatns aren't divisible evenly */
+  if (((double)constant_dividend) / ((double) constant_divisor) - \
+	  ((double) (constant_dividend / constant_divisor)) != 0.0){
+	return NULL;
+  }
+  
+  else {
+	multiplicand = create_con_multiplicand(constant_dividend / \
+										   constant_divisor);
+	
+	result = multiplicand;
+  }
+
+	
+  while(dividend != NULL) {
+	divisor = _divisor;
+	found = 0;
+
+	for (size_t j = 0; j < divisor_length; j++) {
+	  if (dividend->value.name == divisor->value.name && \
+		  !indexs[j]) {
+		indexs[j] = 1;
+		found = 1;
+	  }
+
+	  divisor = divisor->next;
+	}
+
+	if (!found) {
+	  if (result == NULL) {
+		result = create_var_multiplicand(dividend->value.name);
+	  }
+	  add_multiplicand(result, create_var_multiplicand(dividend->\
+													   value.name));
+	}
+	
+	dividend = dividend->next;
+  }
+
+  for (size_t i = 0; i < divisor_length; i++) {
+	if (!indexs[i]) {
+	  free_multiplicands_list(result);
+	  free(indexs);
+	  return NULL;
+	}
+  }
+
+  free(indexs);
+
+  return result;
 }
