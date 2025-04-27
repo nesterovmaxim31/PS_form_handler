@@ -6,20 +6,6 @@
 #include "addend.h" 
 
 
-#define ADD_MULTIPLICAND(addend, multiplicand)	\
-  if (addend->elements == NULL) \
-	addend->elements = multiplicand; \
-  else \
-	add_multiplicand(addend->elements, multiplicand); \
-
-
-#define ADD_ADDEND(form, addend) \
-  if (form->elements == NULL) \
-	form->elements = addend; \
-  else \
-	add_addend(form->elements, addend);
-
-
 /* Parse first line, and return operation */
 operation_t parse_operation(const char* line, ssize_t length) {
   if (length <= 0)
@@ -120,19 +106,20 @@ int parse_psform(const char* line, ssize_t length, psform_t* form) {
 	/* If digit is started, one by one, new digits are
 	   inserting in buffer. */
 	else if (is_digit) {
-	  /* If space, digit is over */
-	  if (line[i] == ' ') {
+	  /* If space or newline, digit is over */
+	  if (line[i] == ' ' || line[i] == '\n') {
 		is_digit = 0;
 		/* Create new multiplicand and add it to current addent */
 		multiplicand = create_con_multiplicand(atoi(buffer));
 		ADD_MULTIPLICAND(addend, multiplicand);
 		addend->size++;
+
 		bzero(buffer, 1024);
 	  }
 
 	  /* If digit, add it in buffer */
 	  else if (isdigit(line[i])) {
-		buffer[strlen(buffer) - 1] = line[i];
+		buffer[strlen(buffer)] = line[i];
 	  }
 
 	  /* Alpha  can't occur in this situation
@@ -178,7 +165,6 @@ int parse_psform(const char* line, ssize_t length, psform_t* form) {
 	  /* If asterisk (*), digit is over */
 	  else if (line[i] == '*') {
 		is_digit = 0;
-
 		multiplicand = create_con_multiplicand(atoi(buffer));
 		ADD_MULTIPLICAND(addend, multiplicand);
 		addend->size++;
@@ -192,6 +178,8 @@ int parse_psform(const char* line, ssize_t length, psform_t* form) {
 	form->size++;
 	ADD_ADDEND(form, addend);
   }
+
+
   
   return 0;
 }

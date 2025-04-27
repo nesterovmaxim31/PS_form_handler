@@ -3,7 +3,7 @@ CC:=@CC@
 CFLAGS:=@CFLAGS@
 
 # Project files
-SRCS := psform.c parser.c multiplicand.c addend.c
+SRCS := psform.c parser.c multiplicand.c addend.c psform_arithmetic.c
 SRCSDIR := src
 OBJS :=$(addprefix $(SRCSDIR)/, $(SRCS:.c=.o))
 VPATH := src
@@ -33,6 +33,9 @@ $(SRCSDIR)/addend.o: addend.c addend.h multiplicand.h
 $(SRCSDIR)/multiplicand.o: multiplicand.c multiplicand.h 
 	$(CC) -c $(CFLAGS) -o $@ $<
 
+$(SRCSDIR)/psform_arithmetic.o: psform_arithmetic.c psform_arithmetic.h psform.h 
+	$(CC) -c $(CFLAGS) -o $@ $<
+
 # Rebuild project 
 remake: clean $(EXE)
 
@@ -41,6 +44,7 @@ test: remake $(TESTSOUT)
 
 $(TESTDIR)/output_%.txt: $(TESTDIR)/input_%.txt
 	./$(EXE) < $^ > $@
+#	diff correct_$@ $@
 
 # Full cleanup of directory
 distclean: clean
