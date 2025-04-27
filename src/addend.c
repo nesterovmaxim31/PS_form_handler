@@ -65,7 +65,6 @@ int compare_addends_list(addend_t* a, addend_t* b, size_t length) {
 
 /* Print addends list */
 char* print_addends_list(addend_t* addend) {
-  multiplicand_t* multiplicand = addend->elements;
   char* line = (char*)malloc(1024);
   bzero(line, 1024);
   size_t length = 1024;
@@ -91,5 +90,7 @@ addend_t* copy_addend(addend_t* addend) {
   copy->sign = addend->sign;
   copy->size = addend->size;
   copy->elements = addend->elements;
-  copy->next = addend->next;
+  copy->next = NULL;
+
+  return copy;
 }

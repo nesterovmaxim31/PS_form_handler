@@ -13,7 +13,8 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
 
   int* indexs = (int*)calloc(psform_b->size, sizeof(int));
   addend_t *a = psform_a->elements, *b = psform_b->elements, *el;
-  multiplicand_t* multiplicand;
+  multiplicand_t *multiplicand, *a_list, *b_list;
+  size_t a_list_size, b_list_size;
   int constant_a, constant_b, found;
   /* Init psform result */
   psform_t* result = (psform_t*)malloc(sizeof(psform_t));
@@ -21,48 +22,72 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
   result->elements = NULL;
   
   for (size_t i = 0; i < psform_a->size; i++) {
-	if (a->elements->type == CONSTANT) {
-	  constant_a = a->elements->value.value;
-	  a->elements = a->elements->next;
-	  a->size--;
-	  continue;
+	a_list = a->elements;
+	a_list_size = a->size;
+	
+	if (a_list->type == CONSTANT) {
+	  constant_a = a_list->value.value;
+	  a_list = a_list->next;
+	  a_list_size--;
 	}
 	else {
 	  constant_a = 1;	  
 	}
 
+	if (a->sign == NEGATIVE)
+	  constant_a *= -1;
+
 	found = 0;
+
+	b = psform_b->elements;
 	for (size_t j = 0; j < psform_b->size; j++) {
-	  if (b->elements->type == CONSTANT) {
-		constant_b = b->elements->value.value;
-		b->elements = b->elements->next;
-		b->size--;
-		continue;
+	  b_list = b->elements;
+	  b_list_size = b->size;
+	  
+	  if (b_list->type == CONSTANT) {
+		constant_b = b_list->value.value;
+		b_list = b_list->next;
+		b_list_size--;
 	  }
 	  else {
 		constant_b = 1;
 	  }
 
+	  if (b->sign == NEGATIVE)
+		constant_b *= -1;
+
 	  /* If multiplicands are the same (apart from constants),
 		 sum this two addends */
-	  if (a->size == b->size && \
-		  compare_multiplicands_list(a->elements, b->elements,\
-									 a->size)) {
+	  if (a_list_size == b_list_size && \
+		  compare_multiplicands_list(a_list, b_list,\
+									 a_list_size)) {
 		constant_a += constant_b;
 
 		if (constant_a != 0) {
-		  el = copy_addend(a);		
+		  el = copy_addend(a);
+		  
+		  if (constant_a < 0) {
+			constant_a *= -1;
+			el->sign = NEGATIVE;
+		  }
+		  
 		  multiplicand = create_con_multiplicand(constant_a);
 		  el->elements = multiplicand;
-		  el->elements->next = copy_multiplicands_list(a->elements);
+		  
+		  el->elements->next = copy_multiplicands_list(a_list);
+		  el->size += a_list_size;
+		  
 		  ADD_ADDEND(result, el);
 		  result->size++;
 		}
 
 		found = 1;
 		indexs[j] = 1;
+		break;
 	  }
-	}
+
+	  b = b->next;
+	} /* End for loop psform_b */
 
 	/* If suitable addend wasn't found in b list,
 	   then add unchanged elements to result*/ 
@@ -71,8 +96,10 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
 	  el->elements = copy_multiplicands_list(a->elements);
 	  ADD_ADDEND(result, el);
 	  result->size++;
-	}	
-  }
+	}
+
+	a = a->next;
+  } /* End for loop psform_a */
 
   /* After handling all addends in list a, add all unchanged
 	 elements in list b into result*/
@@ -94,22 +121,29 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
 psform_t* psform_subtract(psform_t* psform_a, psform_t* psform_b) {
   /* Change signs to opposite for each elements in PS form b
 	 and sum this two form*/
-  
+
+  psform_t* result = (psform_t*)malloc(sizeof(psform_t));
+
+  return result;
 }
 
 /* Multiply two PS form*/
 psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
-  
+  psform_t* result = (psform_t*)malloc(sizeof(psform_t));
+
+  return result;  
 }
 
 /* return NULL if division is impossible */
 psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
+  psform_t* result = NULL;
+
   /* Check if divisor isn't bigger, that 1 */
   if (psform_b->size > 1) {
-	return NULL;
+	return result;
   }
 
-  
+  return result;  
 }
 
 

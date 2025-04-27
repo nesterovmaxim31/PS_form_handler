@@ -5,7 +5,10 @@
 #include "psform_arithmetic.h"
 
 /* Free allocated memory for PS form */
-static int psform_free(psform_t* form) {
+static void psform_free(psform_t* form) {
+  if (form == NULL)
+	return;
+	  
   for (size_t i = 0; i < form->size; i++) {
 	free_multiplicands_list(form->elements->elements);
 	form->elements = form->elements->next;
@@ -18,7 +21,7 @@ static int psform_free(psform_t* form) {
 /* Print PS form */
 static void psform_print(psform_t* form) {
   char* line;
-  if (form == NULL) {
+  if (form == NULL || form->size == 0) {
 	printf("0");
   }
   else {
@@ -30,13 +33,12 @@ static void psform_print(psform_t* form) {
 
 int main() {
   char* line = NULL;
-  int are_equal = 0;
   size_t buf_size;
   ssize_t length;
   operation_t operation;
 
   /* Form a and b  */
-  psform_t *psform_a, *psform_b, *psform_result;
+  psform_t *psform_a, *psform_b, *psform_result = NULL;
   psform_a = (psform_t*)malloc(sizeof(psform_t));
   psform_a->size = 0;
   psform_a->elements = NULL;
@@ -83,6 +85,11 @@ int main() {
 	psform_print(psform_result);
 	break;
   case DIVISION: {
+	psform_result = psform_multiply(psform_a, psform_b);
+	if (psform_result == NULL)
+	  printf("error");
+	else
+	  psform_print(psform_result);	  
 	break;
   }
   case COMPARISON: {
@@ -92,6 +99,7 @@ int main() {
 	else {
 	  printf("not equal");
 	}
+	break;
   }
 	
   }  
@@ -100,6 +108,7 @@ int main() {
   free(line);
   psform_free(psform_a);
   psform_free(psform_b);
+  psform_free(psform_result);
   
   return 0;
 }
