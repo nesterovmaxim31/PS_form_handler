@@ -42,9 +42,10 @@ remake: clean $(EXE)
 # Start tests
 test: remake $(TESTSOUT)
 
-$(TESTDIR)/output_%.txt: $(TESTDIR)/input_%.txt
+$(TESTDIR)/output_%.txt: $(TESTDIR)/input_%.txt  
 	./$(EXE) < $^ > $@
-#	diff correct_$@ $@
+	@diff -q $(TESTDIR)/correct_$(subst $(TESTDIR)/,,$@) $@
+	@echo "Test is passed"
 
 # Full cleanup of directory
 distclean: clean

@@ -67,10 +67,6 @@ int main() {
 	return -1;
   }
 
-
-  psform_print(psform_a);
-  psform_print(psform_b);
-  
   switch (operation) {
   case ADDITION:
 	psform_result = psform_add(psform_a, psform_b);
