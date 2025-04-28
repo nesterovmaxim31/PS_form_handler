@@ -58,19 +58,20 @@ psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
 
   /* */
   for (size_t i = 0; i < psform_b->size; i++) {
-	addend = copy_addend(psform_a->elements);
-	addend->elements = copy_multiplicands_list(addend->elements);
-	add_multiplicand(addend->elements, \
-					 copy_multiplicands_list(b_el->elements));
+	addend = multiply_addends_list(a_list, b_el);
 
-	/* If result is empty, just add new element. If it ins't,
-	 sum current result to new addend */
-	if (result == NULL)
-	  result ->elements = addend;
+	if (result->size == 0)
+	  result->elements = addend;
 	else {
+	  summed = sum_addends_list(result->elements, addend, result->size,
+								addend->size);
+	  result->elements = summed;
 	}
-	// ADD_ADDEND(result, );
+
+	b_el = b_el->next;
   }
+
+  result->size = get_addends_list_length(result->elements);
   
   return result;  
 }

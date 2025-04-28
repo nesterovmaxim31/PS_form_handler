@@ -230,15 +230,56 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
   addend_t *result = NULL, *_list, *new_el;
   _list = list;
 
+  /* Handle el constant */
+  if (el->elements->type == CONSTANT) {
+	el_constant = el->elements->value.value;
+	el = el->next;
+  }
+  else {
+	el_constant = 1;
+  }
+  
   while (list != NULL) {
+	/* Handle element's constant from list */
+	if (list->elements->type == CONSTANT) {
+	  list_element_constant = list->elements->value.value;
+	  list = list->next;
+	}
+	else {
+	  list_element_constant = 1;
+	}
+
+	/* Check if zero */
+	if (list_element_constant * el_constant == 0) {
+	  list = list->next;
+	  continue;
+	}
+	
+	/* If constant is equal to 1, then do not add multiplicand */
+	if (list_element_constant * el_constant != 1) {
+	  result = init_addend();
+	  result->elements = create_con_multiplicand(list_element_constant * \
+												 el_constant);
+	  
+	}
+	  
 	if (result == NULL) {
-	  result = copy_addend(list);
+	  result = init_addend();
 	  result->elements = multiply(list->elements, el->elements);
+	  
 	}
 	else {
 	  new_el = copy_addend(list);
-	  new_el->elements = multiply(list->elements, el->elements);
+
+	  if (list == NULL)
+		new_el->elements = multiply(NULL, el->elements);
+	  else if (el == NULL)
+		new_el->elements = multiply(list->elements, NULL);
+	  else if (list != NULL && el != NULL)
+		new_el->elements = multiply(list->elements, el->elements);
+	  
 	  add_addend(result, new_el);
+	  result->size++;
 	}
 	  
 	list = list->next;

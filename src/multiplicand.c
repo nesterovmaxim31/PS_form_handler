@@ -98,7 +98,8 @@ int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b, \
 	found = 0;
 	b = _b;
 	for (size_t j = 0; j < length; j++) {
-	  if (a->type == b->type && a->value.value == b->value.value && !indexs[j]) {
+	  if (a->type == b->type && a->value.value == b->value.value && \
+		  !indexs[j]) {
 		indexs[j] = 1;
 		found = 1;
 		break;
@@ -241,19 +242,23 @@ multiplicand_t* multiply(multiplicand_t* list, multiplicand_t* mul) {
 	  result = create_var_multiplicand(list->value.name);
 	}
 	else {
-	  add_multiplicand(list, create_var_multiplicand(list->\
+	  add_multiplicand(result, create_var_multiplicand(list->\
 													 value.name));
 	}
 
-	
+	list = list->next;
   }
-
+  
   while (mul != NULL) {
 	if (result == NULL) {
 	  result = create_var_multiplicand(mul->value.name);
 	}
 	else {
-	  add_multiplicand(list, create_var_multiplicand(mul->value.name));
+	  add_multiplicand(result, create_var_multiplicand(mul->value.name));
 	}
+
+	mul = mul->next;
   }
+
+  return result;
 } 
