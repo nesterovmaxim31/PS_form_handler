@@ -4,6 +4,18 @@
 
 #include "multiplicand.h"
 
+/* Return length of list of multiplicands */
+size_t get_multiplicans_list_length(multiplicand_t* list) {
+  size_t size = 0;
+
+  while (list != NULL) {
+	size++;
+	list = list->next;
+  }
+
+  return size;
+}
+
 /* Create new variable multiplicand, and set default values */
 multiplicand_t* create_var_multiplicand(char name) {
   multiplicand_t* multiplicand;
@@ -84,12 +96,11 @@ multiplicand_t* copy_multiplicands_list(multiplicand_t* list) {
 }
 
 /* Compare two lists of multiplicands with the same lengths */
-int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b, \
-							   size_t length) {
+int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b) {
   /* Run througth all elements in list a, and try to find this
 	 element in b. If such element is found, it's index in written
 	 into array */
-
+  size_t length = get_multiplicans_list_length(a);
   int* indexs = (int*)calloc(length, sizeof(int));
   multiplicand_t* _b = b;
   int found; 
@@ -121,7 +132,7 @@ int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b, \
   return 1;
 }
 
-
+/* Generate string, that contain all multiplicand in current list */
 void print_multiplicands_list(multiplicand_t* multiplicand, char* line) {
   size_t length = strlen(line);
   
@@ -154,8 +165,8 @@ void print_multiplicands_list(multiplicand_t* multiplicand, char* line) {
 /* Allocate new multiplicand list, and add here elements from
    list a, that aren't represented in list b. If list b isn't empty
    by the end. Return NULL, because it means divisor is uncorrect */
-multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor, \
-					   size_t divisor_length) {
+multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor) {
+  size_t divisor_length = get_multiplicans_list_length(divisor);
   multiplicand_t *result = NULL, *_divisor, *multiplicand;
   int *indexs = (int*)calloc(divisor_length, sizeof(int)), found, \
 	constant_divisor, constant_dividend;
@@ -234,8 +245,7 @@ multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor, \
 /* Allocate new multiplicand list. To each elements in list,
    add new multiplicand */
 multiplicand_t* multiply(multiplicand_t* list, multiplicand_t* mul) {
-  multiplicand_t *result = NULL, *_list, *el;
-  _list = list;
+  multiplicand_t *result = NULL;
 
   while(list != NULL) {
 	if (result == NULL) {

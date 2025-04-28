@@ -38,11 +38,11 @@ void add_addend(addend_t* leading, addend_t* new) {
 }
 
 /* Compare two lists of addends with the same lengths */
-int compare_addends_list(addend_t* a, addend_t* b, size_t length) {
+int compare_addends_list(addend_t* a, addend_t* b) {
   /* Run througth all elements in list a, and try to find this
 	 element in b. If such element is found, it's index in written
 	 into array */
-
+  size_t length = get_addends_list_length(a);
   int* indexs = (int*)calloc(length, sizeof(int));
   addend_t* _b = b;
   int found; 
@@ -52,7 +52,7 @@ int compare_addends_list(addend_t* a, addend_t* b, size_t length) {
 	b = _b;
 	for (size_t j = 0; j < length; j++) {
 	  if (a->size == b->size && a->sign == b->sign && \
-		  compare_multiplicands_list(a->elements, b->elements, a->size) \
+		  compare_multiplicands_list(a->elements, b->elements) \
 		  && !indexs[j]) {
 		indexs[j] = 1;
 		found = 1;
@@ -154,8 +154,7 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b, size_t size_a, \
 	  /* If multiplicands are the same (apart from constants),
 		 sum this two addends */
 	  if (a_list_size == b_list_size && \
-		  compare_multiplicands_list(a_list, b_list,\
-									 a_list_size)) {
+		  compare_multiplicands_list(a_list, b_list)) {
 		constant_a += constant_b;
 
 		if (constant_a != 0) {
@@ -251,7 +250,7 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
 
 	/* Check if zero */
 	if (list_element_constant * el_constant == 0) {
-	  list = list->next;
+	  list = (list != NULL) ? list->next : NULL; 
 	  continue;
 	}
 	
@@ -260,20 +259,29 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
 	  result = init_addend();
 	  result->elements = create_con_multiplicand(list_element_constant * \
 												 el_constant);
-	  
+	  if (list->sign != el->sign)
+		result->sign = NEGATIVE;
 	}
 	  
 	if (result == NULL) {
 	  result = init_addend();
-	  result->elements = multiply(list->elements, el->elements);
 	  
+	  if (list->sign != el->sign)
+		result->sign = NEGATIVE;
+	  
+	  result->elements = multiply(list->elements, el->elements);	  
 	}
 	else {
-	  new_el = copy_addend(list);
+	  new_el = init_addend(list);
 
-	  if (list == NULL)
+	  if (new_el->sign != el->sign)
+		new_el->sign = NEGATIVE;
+	  
+	  if (list == NULL && el == NULL)
+		break;
+	  else if (list == NULL && el != NULL)
 		new_el->elements = multiply(NULL, el->elements);
-	  else if (el == NULL)
+	  else if (el == NULL && list != NULL)
 		new_el->elements = multiply(list->elements, NULL);
 	  else if (list != NULL && el != NULL)
 		new_el->elements = multiply(list->elements, el->elements);

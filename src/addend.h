@@ -20,7 +20,7 @@ typedef struct addend_st{
 /* function prototype */
 addend_t* init_addend(); /* Create new empty addend */
 void add_addend(addend_t*, addend_t*); /* Add new addend to list */
-int compare_addends_list(addend_t*, addend_t*, size_t); /* Compare two
+int compare_addends_list(addend_t*, addend_t*); /* Compare two
 														   addend */
 size_t get_addends_list_length(addend_t* list); 
 addend_t* copy_addend(addend_t*);

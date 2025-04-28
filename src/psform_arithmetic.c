@@ -10,16 +10,9 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
    suitable (same variable multiplicands) elements from PS form b.
    If sutable elements in a list isn't found, then add to
    multiplicands list*/
-
-  // int* indexs = (int*)calloc(psform_b->size, sizeof(int));
-  addend_t *a = psform_a->elements, *b = psform_b->elements, *el, *sum;
-  multiplicand_t *multiplicand, *a_list, *b_list;
-  size_t a_list_size, b_list_size;
-  int constant_a, constant_b, found;
+  addend_t *a = psform_a->elements, *b = psform_b->elements;
   /* Init psform result */
   psform_t* result = (psform_t*)malloc(sizeof(psform_t));
-  result->size = 0;
-  result->elements = NULL;
   
   result->elements = sum_addends_list(a, b, psform_a->size, psform_b->size);
   result->size = get_addends_list_length(result->elements);
@@ -81,8 +74,7 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
   psform_t* result = NULL;
   addend_t *divisor, *el = psform_a->elements, *addend;
   multiplicand_t *multiplicand, *divided;
-  int found; 
-
+  
   /* Check if divisor isn't bigger, that 1 */
   if (psform_b->size > 1) {
 	return result;
@@ -97,15 +89,13 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
   result = (psform_t*)malloc(sizeof(psform_t));
   
   for (size_t i = 0; i < psform_a->size; i++) {
-	found = 0;
-
 	/* If dividend is equal to zero, go to the next addend */
 	if (el->elements->type == CONSTANT && el->elements->value.value == 0) {
 	  el = el->next;
 	  continue;
 	}	  
 	
-	divided = divide(el->elements, divisor->elements, divisor->size);
+	divided = divide(el->elements, divisor->elements);
 	if (divided == NULL)
 	  return NULL;
 	else {
@@ -132,6 +122,5 @@ int psform_compare(psform_t* psform_a, psform_t* psform_b) {
   if (psform_a->size != psform_b->size)
 	return 0;
 
-  return compare_addends_list(psform_a->elements, psform_b->elements,\
-							  psform_a->size);
+  return compare_addends_list(psform_a->elements, psform_b->elements);
 }

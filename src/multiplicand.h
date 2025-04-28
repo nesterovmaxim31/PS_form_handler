@@ -27,14 +27,14 @@ multiplicand_t* create_var_multiplicand(char); /* Create variable
 multiplicand_t* create_con_multiplicand(int); /* Create constant
 												  multiplicand */
 multiplicand_t* copy_multiplicands_list(multiplicand_t*);
-multiplicand_t* divide(multiplicand_t*, multiplicand_t*, size_t);
+multiplicand_t* divide(multiplicand_t*, multiplicand_t*);
 multiplicand_t* multiply(multiplicand_t*, multiplicand_t*);
 void add_multiplicand(multiplicand_t*, multiplicand_t*); /* Add
 												new multiplicand in list */ 
 void free_multiplicands_list(multiplicand_t*); /* Recursively free
 												  all elements in list */
 
-int compare_multiplicands_list(multiplicand_t*, multiplicand_t*, size_t); 
+int compare_multiplicands_list(multiplicand_t*, multiplicand_t*); 
 
 void print_multiplicands_list(multiplicand_t*, char*); 
 
