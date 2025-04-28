@@ -4,6 +4,18 @@
 #include "addend.h"
 #include "multiplicand.h"
 
+/* Return length of list of addends */
+size_t get_addends_list_length(addend_t* list) {
+  size_t size = 0;
+
+  while (list != NULL) {
+	size++;
+	list = list->next;
+  }
+
+  return size;
+}
+
 /* Create new addend and set it's values to default */
 addend_t* init_addend() {
   addend_t* addend = (addend_t*)malloc(sizeof(addend_t));
@@ -96,9 +108,120 @@ addend_t* copy_addend(addend_t* addend) {
 }
 
 /* Allocate memory and sum two addends list */
-addend_t* sum_addends_list(addend_t* list, addend_t* el) {
+addend_t* sum_addends_list(addend_t* a, addend_t* b, size_t size_a, \
+						   size_t size_b) {
+  int* indexs = (int*)calloc(size_b, sizeof(int));
+  multiplicand_t *multiplicand, *a_list, *b_list;
+  size_t a_list_size, b_list_size;
+  addend_t* result = NULL, *el, *_b;
+  int constant_a, constant_b, found;
+  _b = b;
 
+  for (size_t i = 0; i < size_a; i++) {
+	a_list = a->elements;
+	a_list_size = a->size;
+	
+	if (a_list->type == CONSTANT) {
+	  constant_a = a_list->value.value;
+	  a_list = a_list->next;
+	  a_list_size--;
+	}
+	else {
+	  constant_a = 1;	  
+	}
 
+	if (a->sign == NEGATIVE)
+	  constant_a *= -1;
+
+	found = 0;
+	b = _b;
+	for (size_t j = 0; j < size_b; j++) {
+	  b_list = b->elements;
+	  b_list_size = b->size;
+	  
+	  if (b_list->type == CONSTANT) {
+		constant_b = b_list->value.value;
+		b_list = b_list->next;
+		b_list_size--;
+	  }
+	  else {
+		constant_b = 1;
+	  }
+
+	  if (b->sign == NEGATIVE)
+		constant_b *= -1;
+
+	  /* If multiplicands are the same (apart from constants),
+		 sum this two addends */
+	  if (a_list_size == b_list_size && \
+		  compare_multiplicands_list(a_list, b_list,\
+									 a_list_size)) {
+		constant_a += constant_b;
+
+		if (constant_a != 0) {
+		  el = copy_addend(a);
+		  
+		  if (constant_a < 0) {
+			constant_a *= -1;
+			el->sign = NEGATIVE;
+		  }
+		  
+		  multiplicand = create_con_multiplicand(constant_a);
+		  el->elements = multiplicand;
+		  
+		  el->elements->next = copy_multiplicands_list(a_list);
+		  el->size += a_list_size;
+
+		  if (result == NULL)
+			result = el;
+		  else {
+			add_addend(result, el);
+			result->size++;
+		  }
+		}
+
+		found = 1;
+		indexs[j] = 1;
+		break;
+	  }
+
+	  b = b->next;
+	} /* End for loop psform_b */
+
+	/* If suitable addend wasn't found in b list,
+	   then add unchanged elements to result*/ 
+	if(!found) {
+	  el = copy_addend(a);
+	  el->elements = copy_multiplicands_list(a->elements);
+
+	  if (result == NULL)
+		result = el;
+	  else
+		add_addend(result, el);
+	  result->size++;
+	}
+
+	a = a->next;
+  } /* End for loop psform_a */
+
+  b = _b;
+  for (size_t i = 0; i < size_b; i++) {
+	if (!indexs[i]) {
+	  el = copy_addend(b);
+	  el->elements = copy_multiplicands_list(b->elements);
+	  
+	  if (result == NULL)
+		result = el;
+	  else {
+		add_addend(result, el);
+		result->size++;
+	  }
+	}
+
+	b = b->next;
+  }
+  
+  return result;
 }
 
 /* Allocate memory and multiply addends list on addend el */
