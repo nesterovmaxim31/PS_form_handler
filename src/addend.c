@@ -94,3 +94,32 @@ addend_t* copy_addend(addend_t* addend) {
 
   return copy;
 }
+
+/* Allocate memory and sum two addends list */
+addend_t* sum_addends_list(addend_t* list, addend_t* el) {
+
+
+}
+
+/* Allocate memory and multiply addends list on addend el */
+addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
+  int list_element_constant, el_constant;
+  addend_t *result = NULL, *_list, *new_el;
+  _list = list;
+
+  while (list != NULL) {
+	if (result == NULL) {
+	  result = copy_addend(list);
+	  result->elements = multiply(list->elements, el->elements);
+	}
+	else {
+	  new_el = copy_addend(list);
+	  new_el->elements = multiply(list->elements, el->elements);
+	  add_addend(result, new_el);
+	}
+	  
+	list = list->next;
+  }
+
+  return result;
+}

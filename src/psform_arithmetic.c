@@ -113,7 +113,8 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
 
 	b = b->next;
   }
-
+  
+  free(indexs);
   return result;
 }
 
@@ -137,10 +138,28 @@ psform_t* psform_subtract(psform_t* psform_a, psform_t* psform_b) {
   return psform_add(psform_a, psform_b);
 }
 
-/* Multiply two PS form*/
+/* Multiply two PS form. Multiply all addends in PS form a for each
+   elements in PS form b, then sum. */
 psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
   psform_t* result = (psform_t*)malloc(sizeof(psform_t));
+  addend_t *addend, *a_list = psform_a->elements, *b_el = psform_b->\
+	elements, *summed;
 
+  /* */
+  for (size_t i = 0; i < psform_b->size; i++) {
+	addend = copy_addend(psform_a->elements);
+	addend->elements = copy_multiplicands_list(addend->elements);
+	add_multiplicand(addend->elements, \
+					 copy_multiplicands_list(b_el->elements));
+
+	/* If result is empty, just add new element. If it ins't,
+	 sum current result to new addend */
+	if (result == NULL)
+	  result ->elements = addend;
+	else {
+	}
+	// ADD_ADDEND(result, );
+  }
   
   return result;  
 }

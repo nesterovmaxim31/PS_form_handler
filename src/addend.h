@@ -23,5 +23,8 @@ void add_addend(addend_t*, addend_t*); /* Add new addend to list */
 int compare_addends_list(addend_t*, addend_t*, size_t); /* Compare two
 														   addend */
 addend_t* copy_addend(addend_t*);
+addend_t* multipy_addends_list(addend_t*, addend_t*);
+addend_t* sum_addends_list(addend_t*, addend_t*);
 char* print_addends_list(addend_t*);
+
 #endif

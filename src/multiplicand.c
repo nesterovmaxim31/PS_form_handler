@@ -229,3 +229,31 @@ multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor, \
 
   return result;
 }
+
+/* Allocate new multiplicand list. To each elements in list,
+   add new multiplicand */
+multiplicand_t* multiply(multiplicand_t* list, multiplicand_t* mul) {
+  multiplicand_t *result = NULL, *_list, *el;
+  _list = list;
+
+  while(list != NULL) {
+	if (result == NULL) {
+	  result = create_var_multiplicand(list->value.name);
+	}
+	else {
+	  add_multiplicand(list, create_var_multiplicand(list->\
+													 value.name));
+	}
+
+	
+  }
+
+  while (mul != NULL) {
+	if (result == NULL) {
+	  result = create_var_multiplicand(mul->value.name);
+	}
+	else {
+	  add_multiplicand(list, create_var_multiplicand(mul->value.name));
+	}
+  }
+} 
