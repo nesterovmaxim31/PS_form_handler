@@ -14,7 +14,7 @@ psform_t* psform_add(psform_t* psform_a, psform_t* psform_b) {
   /* Init psform result */
   psform_t* result = (psform_t*)malloc(sizeof(psform_t));
   
-  result->elements = sum_addends_list(a, b, psform_a->size, psform_b->size);
+  result->elements = sum_addends_list(a, b);
   result->size = get_addends_list_length(result->elements);
   /* After handling all addends in list a, add all unchanged
 	 elements in list b into result*/
@@ -53,11 +53,11 @@ psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
   for (size_t i = 0; i < psform_b->size; i++) {
 	addend = multiply_addends_list(a_list, b_el);
 
-	if (result->size == 0)
+	if (get_addends_list_length(result->elements) == 0) {
 	  result->elements = addend;
+	}
 	else {
-	  summed = sum_addends_list(result->elements, addend, result->size,
-								addend->size);
+	  summed = sum_addends_list(result->elements, addend);
 	  result->elements = summed;
 	}
 
@@ -90,12 +90,13 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
   
   for (size_t i = 0; i < psform_a->size; i++) {
 	/* If dividend is equal to zero, go to the next addend */
-	if (el->elements->type == CONSTANT && el->elements->value.value == 0) {
+	if (el->elements->type == CONSTANT && \
+		el->elements->value.value == 0) {
 	  el = el->next;
 	  continue;
 	}	  
 	
-	divided = divide(el->elements, divisor->elements);
+	divided = divide_multiplicands_list(el->elements, divisor->elements);
 	if (divided == NULL)
 	  return NULL;
 	else {
@@ -119,8 +120,8 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
 
 int psform_compare(psform_t* psform_a, psform_t* psform_b) {
   /* Compare length */
-  if (psform_a->size != psform_b->size)
-	return 0;
+  /* if (psform_a->size != psform_b->size) */
+  /* 	return 0; */
 
   return compare_addends_list(psform_a->elements, psform_b->elements);
 }

@@ -52,6 +52,9 @@ void add_multiplicand(multiplicand_t* leading, multiplicand_t* new) {
 /* Free list of multiplicands */ 
 void free_multiplicands_list(multiplicand_t* leading) {
   multiplicand_t* next;
+
+  if (leading == NULL)
+	return;
   
   if (leading->next != NULL) {
 	next = leading->next;
@@ -100,7 +103,13 @@ int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b) {
   /* Run througth all elements in list a, and try to find this
 	 element in b. If such element is found, it's index in written
 	 into array */
+
+  /* Compare lengths */
+  if (get_multiplicans_list_length(a) != get_multiplicans_list_length(b))
+	return 0;
+  
   size_t length = get_multiplicans_list_length(a);
+  
   int* indexs = (int*)calloc(length, sizeof(int));
   multiplicand_t* _b = b;
   int found; 
@@ -165,7 +174,8 @@ void print_multiplicands_list(multiplicand_t* multiplicand, char* line) {
 /* Allocate new multiplicand list, and add here elements from
    list a, that aren't represented in list b. If list b isn't empty
    by the end. Return NULL, because it means divisor is uncorrect */
-multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor) {
+multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
+										  multiplicand_t* divisor) {
   size_t divisor_length = get_multiplicans_list_length(divisor);
   multiplicand_t *result = NULL, *_divisor, *multiplicand;
   int *indexs = (int*)calloc(divisor_length, sizeof(int)), found, \
@@ -196,7 +206,7 @@ multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor) {
 	return NULL;
   }
   
-  else {
+  else if (constant_dividend  / constant_divisor != 1){
 	multiplicand = create_con_multiplicand(constant_dividend / \
 										   constant_divisor);
 	
@@ -219,10 +229,10 @@ multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor) {
 	}
 
 	if (!found) {
-	  if (result == NULL) {
-		result = create_var_multiplicand(dividend->value.name);
-	  }
-	  add_multiplicand(result, create_var_multiplicand(dividend->\
+	  if (result == NULL) 
+		result = create_var_multiplicand(dividend->value.name);	  
+	  else 
+		add_multiplicand(result, create_var_multiplicand(dividend->		\
 													   value.name));
 	}
 	
@@ -244,8 +254,12 @@ multiplicand_t* divide(multiplicand_t* dividend, multiplicand_t* divisor) {
 
 /* Allocate new multiplicand list. To each elements in list,
    add new multiplicand */
-multiplicand_t* multiply(multiplicand_t* list, multiplicand_t* mul) {
-  multiplicand_t *result = NULL;
+multiplicand_t* multiply_multiplicands_list(multiplicand_t* list,\
+											multiplicand_t* mul) {
+  multiplicand_t *result = NULL, *_mul ;
+  size_t mul_length = get_multiplicans_list_length(mul);
+  int* indexs = (int*)calloc(mul_length, sizeof(int));
+  _mul = mul;
 
   while(list != NULL) {
 	if (result == NULL) {
@@ -256,19 +270,37 @@ multiplicand_t* multiply(multiplicand_t* list, multiplicand_t* mul) {
 													 value.name));
 	}
 
+	/* To keep correct order in case of power. (x*y *x == x*x*y)
+	   not (x*y *x != x*y*x) */
+	mul = _mul;
+	for (size_t i = 0; i < mul_length; i++) {
+	  if (mul->value.name == list->value.name && !indexs[i]) {
+		add_multiplicand(result, create_var_multiplicand(mul->value.name));
+		indexs[i] = 1;
+	  }
+
+	  mul = mul->next;
+	}	
+
 	list = list->next;
   }
-  
-  while (mul != NULL) {
-	if (result == NULL) {
-	  result = create_var_multiplicand(mul->value.name);
-	}
-	else {
-	  add_multiplicand(result, create_var_multiplicand(mul->value.name));
+
+  mul = _mul;
+  /* Remaining elements */
+  for (size_t i = 0; i < mul_length; i++) {
+	if (!indexs[i]) {
+	  if (result == NULL) {
+		result = create_var_multiplicand(mul->value.name);
+	  }
+	  else {
+		add_multiplicand(result, create_var_multiplicand(mul->value.name));
+	  }
 	}
 
 	mul = mul->next;
   }
+  
+  free(indexs);
 
   return result;
 } 

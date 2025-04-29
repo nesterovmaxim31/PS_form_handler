@@ -42,6 +42,10 @@ int compare_addends_list(addend_t* a, addend_t* b) {
   /* Run througth all elements in list a, and try to find this
 	 element in b. If such element is found, it's index in written
 	 into array */
+  /* Compare lengths */
+  if (get_addends_list_length(a) != get_addends_list_length(b))
+	return 0;
+  
   size_t length = get_addends_list_length(a);
   int* indexs = (int*)calloc(length, sizeof(int));
   addend_t* _b = b;
@@ -108,8 +112,9 @@ addend_t* copy_addend(addend_t* addend) {
 }
 
 /* Allocate memory and sum two addends list */
-addend_t* sum_addends_list(addend_t* a, addend_t* b, size_t size_a, \
-						   size_t size_b) {
+addend_t* sum_addends_list(addend_t* a, addend_t* b) {
+  size_t size_a =  get_addends_list_length(a);
+  size_t size_b = get_addends_list_length(b);
   int* indexs = (int*)calloc(size_b, sizeof(int));
   multiplicand_t *multiplicand, *a_list, *b_list;
   size_t a_list_size, b_list_size;
@@ -119,7 +124,7 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b, size_t size_a, \
 
   for (size_t i = 0; i < size_a; i++) {
 	a_list = a->elements;
-	a_list_size = a->size;
+	a_list_size = get_multiplicans_list_length(a->elements);
 	
 	if (a_list->type == CONSTANT) {
 	  constant_a = a_list->value.value;
@@ -137,7 +142,7 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b, size_t size_a, \
 	b = _b;
 	for (size_t j = 0; j < size_b; j++) {
 	  b_list = b->elements;
-	  b_list_size = b->size;
+	  b_list_size = get_multiplicans_list_length(b->elements);
 	  
 	  if (b_list->type == CONSTANT) {
 		constant_b = b_list->value.value;
@@ -223,26 +228,49 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b, size_t size_a, \
   return result;
 }
 
+
+static inline
+multiplicand_t* multiply(addend_t* a, addend_t* b) {	
+  if (a == NULL && b == NULL) {								
+	return NULL;													
+  } 														
+  else if (a == NULL && b != NULL) {						
+	return multiply_multiplicands_list(NULL, b->elements);			
+  }															
+  else if (a != NULL && b == NULL) {						
+	return multiply_multiplicands_list(a->elements, NULL);			
+  }															
+  else {													
+	return multiply_multiplicands_list(a->elements, b->elements);	
+  }
+}
+
+
 /* Allocate memory and multiply addends list on addend el */
 addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
   int list_element_constant, el_constant;
+  sign_t list_element_sign, el_sign;
   addend_t *result = NULL, *_list, *new_el;
+  multiplicand_t* list_elements;
   _list = list;
 
+  el_sign = el->sign;
   /* Handle el constant */
   if (el->elements->type == CONSTANT) {
 	el_constant = el->elements->value.value;
-	el = el->next;
+	el->elements = el->elements->next;
   }
   else {
 	el_constant = 1;
   }
   
   while (list != NULL) {
+	list_element_sign = list->sign;
+	list_elements = list->elements;
 	/* Handle element's constant from list */
-	if (list->elements->type == CONSTANT) {
+	if (list_elements->type == CONSTANT) {
 	  list_element_constant = list->elements->value.value;
-	  list = list->next;
+	  list_elements = list_elements->next;
 	}
 	else {
 	  list_element_constant = 1;
@@ -259,33 +287,26 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
 	  result = init_addend();
 	  result->elements = create_con_multiplicand(list_element_constant * \
 												 el_constant);
-	  if (list->sign != el->sign)
+	  if (list_element_sign != el_sign)
 		result->sign = NEGATIVE;
 	}
-	  
+
+	
 	if (result == NULL) {
 	  result = init_addend();
 	  
-	  if (list->sign != el->sign)
-		result->sign = NEGATIVE;
-	  
-	  result->elements = multiply(list->elements, el->elements);	  
+	  if (list_element_sign != el_sign)
+		result->sign = NEGATIVE;  
+
+	  result->elements = multiply(list, el);
 	}
 	else {
-	  new_el = init_addend(list);
+	  new_el = init_addend();
 
 	  if (new_el->sign != el->sign)
 		new_el->sign = NEGATIVE;
 	  
-	  if (list == NULL && el == NULL)
-		break;
-	  else if (list == NULL && el != NULL)
-		new_el->elements = multiply(NULL, el->elements);
-	  else if (el == NULL && list != NULL)
-		new_el->elements = multiply(list->elements, NULL);
-	  else if (list != NULL && el != NULL)
-		new_el->elements = multiply(list->elements, el->elements);
-	  
+	  new_el->elements = multiply(list, el);
 	  add_addend(result, new_el);
 	  result->size++;
 	}

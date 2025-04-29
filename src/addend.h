@@ -25,7 +25,7 @@ int compare_addends_list(addend_t*, addend_t*); /* Compare two
 size_t get_addends_list_length(addend_t* list); 
 addend_t* copy_addend(addend_t*);
 addend_t* multiply_addends_list(addend_t*, addend_t*);
-addend_t* sum_addends_list(addend_t*, addend_t*, size_t, size_t);
+addend_t* sum_addends_list(addend_t*, addend_t*);
 char* print_addends_list(addend_t*);
 
 #endif
