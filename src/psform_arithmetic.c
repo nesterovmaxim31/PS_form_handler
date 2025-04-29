@@ -1,5 +1,5 @@
 #include <stdlib.h> /* calloc free malloc */
-#include <stdio.h>
+#include <stdio.h>  /* fprintf */
 
 #include "psform_arithmetic.h"
 #include "psform.h"
@@ -134,7 +134,7 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
   return result;  
 }
 
-
+/* Compare two PS form. If return 1 -> equal, if return 0 -> not equal */
 int psform_compare(psform_t* psform_a, psform_t* psform_b) {
   return compare_addends_list(psform_a->elements, psform_b->elements);
 }

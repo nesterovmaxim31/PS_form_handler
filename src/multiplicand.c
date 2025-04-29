@@ -1,5 +1,5 @@
 #include <stdlib.h> /* malloc calloc free */
-#include <string.h>
+#include <string.h> /* */
 #include <stdio.h> /* fprintf */
 
 #include "multiplicand.h"
@@ -259,7 +259,7 @@ multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
 	  if (result == NULL) 
 		result = create_var_multiplicand(dividend->value.name);	  
 	  else 
-		add_multiplicand(result, create_var_multiplicand(dividend->		\
+		add_multiplicand(result, create_var_multiplicand(dividend->	\
 													   value.name));
 	}
 	

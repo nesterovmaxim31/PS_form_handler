@@ -1,6 +1,6 @@
-#include <ctype.h> /* isdigit isalpha */
+#include <ctype.h>  /* isdigit isalpha */
 #include <string.h> /* bzero */
-#include <stdlib.h>
+#include <stdlib.h> /* size_t*/
 
 #include "parser.h"
 #include "addend.h" 

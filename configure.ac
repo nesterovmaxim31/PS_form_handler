@@ -2,7 +2,7 @@ dnl Minimal version required (Not tested on older version)
 AC_PREREQ([2.72])
 
 dnl PS form hadler, version 1.0
-AC_INIT([psform_handler], [1.0], [maxgoonfuture@gmail.com])
+AC_INIT([psform_handler],[1.0],[maxgoonfuture@gmail.com])
 AC_CONFIG_SRCDIR([src/psform.c])
 
 dnl Language 
@@ -10,6 +10,10 @@ AC_LANG(C)
 
 dnl Check for C compiler
 AC_PROG_CC
+
+dnl Check for const
+AC_C_CONST
+AC_C_INLINE
 
 dnl Check for included default C libraries
 AC_CHECK_INCLUDES_DEFAULT
@@ -29,18 +33,31 @@ AC_ARG_ENABLE([debug],
 )
 
 dnl Check for test tools
+AC_CHECK_PROG([TIME], [time], [yes], [no])
 AC_ARG_ENABLE([benchmark],
   [AS_HELP_STRING([--enable-benchmark],
-                  [whether to enable benchmark (default is no)])],
-  [TESTTOOLS="$TESTTOOLS time"],
+                  [whether to enable benchmark (default is no).
+				  Make sure you have INSTALLED time utility, not
+				  a shell keywork])],
+  [if test "$TIME" = "yes"; then
+  	  TESTTOOLS="$TESTTOOLS time"
+   else
+      AC_MSG_ERROR([time utility isn't installed])
+   fi],
   [TESTTOOLS="$TESTTOOLS"]
 )
 
 dnl Check for valgrind
+AC_CHECK_PROG([VALGRIND], [valgrind], [yes], [no])
 AC_ARG_ENABLE([valgrind],
   [AS_HELP_STRING([--enable-valgrind],
                   [whether to enable valgrind (default is no)])],
-  [TESTTOOLS="$TESTTOOLS valgrind --track-origins=yes --leak-check=full"],
+				  
+  [if test "$VALGRIND" = "yes"; then
+  	  TESTTOOLS="$TESTTOOLS valgrind --track-origins=yes --leak-check=full"
+   else
+      AC_MSG_ERROR([valgrind isn't installed])
+   fi],
   [TESTTOOLS="$TESTTOOLS"]
 )
 

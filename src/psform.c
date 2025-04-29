@@ -1,4 +1,5 @@
-#include <stdio.h> /* puts */
+#include <stdio.h>  /* puts printf fprintf */
+#include <stdlib.h> /* size_t malloc free */
 
 #include "psform.h"
 #include "parser.h"
@@ -27,21 +28,24 @@ static void psform_print(psform_t* form) {
   }
 }
 
+
 int main() {
   char* line = NULL;
   size_t buf_size;
   ssize_t length;
   operation_t operation;
 
-  /* Form a and b  */
+  /* Form a and b */
   psform_t *psform_a = NULL, *psform_b = NULL, *psform_result = NULL;
   psform_a = (psform_t*)malloc(sizeof(psform_t));
   psform_a->size = 0;
   psform_a->elements = NULL;
+  
   psform_b = (psform_t*)malloc(sizeof(psform_t));
   psform_b->size = 0;
   psform_b->elements = NULL;
 
+  /* If memory allocation is failed */ 
   if (psform_a == NULL || psform_b == NULL) {
 	fprintf(stderr, "Unable to allocate memory\n");
 	free(psform_a);
@@ -74,6 +78,7 @@ int main() {
 	return -1;
   }
 
+  /* Perform operation */
   switch (operation) {
   case ADDITION:
 	psform_result = psform_add(psform_a, psform_b);

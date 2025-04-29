@@ -22,22 +22,31 @@ typedef struct multiplicand_st{
 } multiplicand_t;
 
 /* function prototype */
-multiplicand_t* create_var_multiplicand(char); /* Create variable
-												  multiplicand*/
-multiplicand_t* create_con_multiplicand(int); /* Create constant
-												  multiplicand */
+/* Create variable multiplicand */
+multiplicand_t* create_var_multiplicand(char);
+/* Create constant multiplicand */
+multiplicand_t* create_con_multiplicand(int);
+/* Allocate and copy multiplicands list */
 multiplicand_t* copy_multiplicands_list(multiplicand_t*);
+/* Allocate and divide two multiplicands lists */
 multiplicand_t* divide_multiplicands_list(multiplicand_t*,\
 										  multiplicand_t*);
-multiplicand_t* multiply_multiplicands_list(multiplicand_t*,
+/* Allocate and multiply two multiplicands lists*/
+multiplicand_t* multiply_multiplicands_list(multiplicand_t*,\
 											multiplicand_t*);
-void add_multiplicand(multiplicand_t*, multiplicand_t*); /* Add
-												new multiplicand in list */ 
-void free_multiplicands_list(multiplicand_t*); /* Recursively free
-												  all elements in list */
+
+/* Add new multiplicand in list */ 
+void add_multiplicand(multiplicand_t*, multiplicand_t*);
+/* Recursively free all elements in list */
+void free_multiplicands_list(multiplicand_t*);
+
+/* Get length of multiplicands list */
 size_t get_multiplicans_list_length(multiplicand_t*);
+
+/* Compare two multiplicands lists */
 int compare_multiplicands_list(multiplicand_t*, multiplicand_t*); 
 
+/* Generate string with all multiplicands in list */
 void print_multiplicands_list(multiplicand_t*, char*); 
 
 #endif

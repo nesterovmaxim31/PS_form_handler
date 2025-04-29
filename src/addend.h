@@ -18,15 +18,28 @@ typedef struct addend_st{
 } addend_t;
 
 /* function prototype */
-addend_t* init_addend(); /* Create new empty addend */
-void add_addend(addend_t*, addend_t*); /* Add new addend to list */
-int compare_addends_list(addend_t*, addend_t*); /* Compare two
-														   addend */
-void free_addends_list(addend_t*);
-size_t get_addends_list_length(addend_t* list); 
+
+/* Create new empty addend */
+addend_t* init_addend();
+/* Allocate memory and copy addend */
 addend_t* copy_addend(addend_t*);
-addend_t* multiply_addends_list(addend_t*, addend_t*);
+/* Allocate memory and sum two addends list */
 addend_t* sum_addends_list(addend_t*, addend_t*);
+/* Allocate memory and multiply two addends */
+addend_t* multiply_addends_list(addend_t*, addend_t*);
+
+/* Add new addend to list */
+void add_addend(addend_t*, addend_t*);
+/* Free allocated memory of all addends in list */
+void free_addends_list(addend_t*);
+
+/* Compare two addends lists */
+int compare_addends_list(addend_t*, addend_t*);
+
+/* Get length of addends list */
+size_t get_addends_list_length(addend_t* list);
+
+/* Return allocated string with all addends and their's multiplicands */
 char* print_addends_list(addend_t*);
 
 #endif

@@ -1,5 +1,5 @@
-#include <stdlib.h> /* malloc calloc size_t */
-#include <stdio.h> /* fprintf */
+#include <stdlib.h> /* malloc calloc size_t exit */
+#include <stdio.h>  /* fprintf */
 #include <string.h> /* bzero */
 
 #include "addend.h"
@@ -102,10 +102,11 @@ int compare_addends_list(addend_t* a, addend_t* b) {
 char* print_addends_list(addend_t* addend) {
   if (addend == NULL)
 	return NULL;
-  
-  char* line = (char*)malloc(1024);
-  bzero(line, 1024);
-  // size_t length = 1024;
+
+  /* To store 100 addends with 27 multiplicand in each
+	 is enough 8192 bytes */
+  char* line = (char*)malloc(8192);
+  bzero(line, 8192);
   
   if (addend->sign == NEGATIVE)
 	line[0] = '-';
@@ -148,11 +149,15 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b) {
 	fprintf(stderr, "Unable to allocate memory\n");
 	exit(EXIT_FAILURE);
   }
-  
+
+  /* Run througth all addends in a, and try to find
+	 suitable addend in b. In indexs are stored index of
+	 suitable addend form b */
   for (size_t i = 0; i < size_a; i++) {
 	a_list = a->elements;
 	a_list_size = get_multiplicans_list_length(a->elements);
-	
+
+	/* Handle constant */
 	if (a_list->type == CONSTANT) {
 	  constant_a = a_list->value.value;
 	  a_list = a_list->next;
@@ -165,6 +170,7 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b) {
 	if (a->sign == NEGATIVE)
 	  constant_a *= -1;
 
+	/* Run througth all addends in b */
 	found = 0;
 	b = _b;
 	for (size_t j = 0; j < size_b; j++) {
@@ -257,7 +263,7 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b) {
   return result;
 }
 
-
+/* Multiply two multiplicands list */
 static inline
 multiplicand_t* multiply(multiplicand_t* a, multiplicand_t* b) {	
   if (a == NULL && b == NULL) {								

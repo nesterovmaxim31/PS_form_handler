@@ -17,7 +17,7 @@ TESTDIR := test
 TESTS := ./$(TESTDIR)/input_*.txt
 TESTSOUT := $(subst input,output,$(wildcard ./$(TESTDIR)/input_*.txt))
 
-.PHONY: all clean remake test
+.PHONY: all clean remake test distclean
 
 # Built executable 
 $(EXE): $(OBJS)
