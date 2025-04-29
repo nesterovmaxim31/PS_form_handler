@@ -33,15 +33,15 @@ AC_ARG_ENABLE([benchmark],
   [AS_HELP_STRING([--enable-benchmark],
                   [whether to enable benchmark (default is no)])],
   [TESTTOOLS="$TESTTOOLS time"],
-  [TESTTOOLS=" "]
+  [TESTTOOLS="$TESTTOOLS"]
 )
 
 dnl Check for valgrind
 AC_ARG_ENABLE([valgrind],
   [AS_HELP_STRING([--enable-valgrind],
                   [whether to enable valgrind (default is no)])],
-  [TESTTOOLS="$TESTTOOLS valgrind"],
-  [TESTTOOLS=" "]
+  [TESTTOOLS="$TESTTOOLS valgrind --track-origins=yes --leak-check=full"],
+  [TESTTOOLS="$TESTTOOLS"]
 )
 
 dnl Check for address sanitizer
@@ -49,6 +49,18 @@ AC_ARG_ENABLE([AddressSanitizer],
   [AS_HELP_STRING([--enable-AddressSanitizer],
                   [whether to enable address sanitizer (default is no)])],
   [CFLAGS="$CFLAGS -fsanitize=address"],
+  [CFLAGS="$CFLAGS"]
+)
+
+dnl Check for memory sanitizer (Only for clang as CC)
+AC_ARG_ENABLE([MemorySanitizer],
+  [AS_HELP_STRING([--enable-MemorySanitizer],
+                  [whether to enable memory sanitizer (default is no)])],	  
+  [if test "$CC" = "clang"; then 
+  	  CFLAGS="$CFLAGS -fsanitize=memory"
+   else
+	  AC_MSG_ERROR([Memory sanitizer is enable only for clang])
+   fi],
   [CFLAGS="$CFLAGS"]
 )
 

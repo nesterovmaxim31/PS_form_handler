@@ -27,6 +27,7 @@ multiplicand_t* create_var_multiplicand(char name) {
   }
 
   multiplicand->type = VARIABLE;
+  multiplicand->value.value = 0;  
   multiplicand->value.name = name;
   multiplicand->next = NULL;
 
