@@ -2,6 +2,9 @@
 CC:=@CC@
 CFLAGS:=@CFLAGS@
 
+# Test tools, such as time, valgrind
+TESTTOOLS:=@TESTTOOLS@
+
 # Project files
 SRCS := psform.c parser.c multiplicand.c addend.c psform_arithmetic.c
 SRCSDIR := src
@@ -44,7 +47,7 @@ test: remake $(TESTSOUT)
 	@echo "ALL TESTS ARE PASSED"
 
 $(TESTDIR)/output_%.txt: $(TESTDIR)/input_%.txt  
-	./$(EXE) < $^ > $@
+	$(TESTTOOLS) ./$(EXE) < $^ > $@
 	@diff -q $(TESTDIR)/correct_$(subst $(TESTDIR)/,,$@) $@
 	@echo "Test is passed"
 

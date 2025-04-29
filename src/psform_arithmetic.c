@@ -73,7 +73,7 @@ psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
 psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
   psform_t* result = NULL;
   addend_t *divisor, *el = psform_a->elements, *addend;
-  multiplicand_t *multiplicand, *divided;
+  multiplicand_t* divided;
   
   /* Check if divisor isn't bigger, that 1 */
   if (psform_b->size > 1) {

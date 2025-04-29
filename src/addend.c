@@ -83,7 +83,7 @@ int compare_addends_list(addend_t* a, addend_t* b) {
 char* print_addends_list(addend_t* addend) {
   char* line = (char*)malloc(1024);
   bzero(line, 1024);
-  size_t length = 1024;
+  // size_t length = 1024;
   
   if (addend->sign == NEGATIVE)
 	line[0] = '-';
@@ -250,9 +250,8 @@ multiplicand_t* multiply(addend_t* a, addend_t* b) {
 addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
   int list_element_constant, el_constant;
   sign_t list_element_sign, el_sign;
-  addend_t *result = NULL, *_list, *new_el;
+  addend_t *result = NULL, *new_el;
   multiplicand_t* list_elements;
-  _list = list;
 
   el_sign = el->sign;
   /* Handle el constant */

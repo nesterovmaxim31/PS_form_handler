@@ -97,7 +97,8 @@ int main() {
 	}
 	break;
   }
-	
+  default:	
+	break;
   }  
 
   /* Free allocated memory */
