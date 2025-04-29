@@ -8,19 +8,15 @@
 static void psform_free(psform_t* form) {
   if (form == NULL)
 	return;
-	  
-  for (size_t i = 0; i < form->size; i++) {
-	free_multiplicands_list(form->elements->elements);
-	form->elements = form->elements->next;
-	free(form->elements);
-  }
+
+  free_addends_list(form->elements);
 
   free(form);
 }
 
 /* Print PS form */
 static void psform_print(psform_t* form) {
-  char* line;
+  char* line = NULL;
   if (form == NULL || form->size == 0) {
 	printf("0");
   }
@@ -38,7 +34,7 @@ int main() {
   operation_t operation;
 
   /* Form a and b  */
-  psform_t *psform_a, *psform_b, *psform_result = NULL;
+  psform_t *psform_a = NULL, *psform_b = NULL, *psform_result = NULL;
   psform_a = (psform_t*)malloc(sizeof(psform_t));
   psform_a->size = 0;
   psform_a->elements = NULL;
@@ -46,6 +42,13 @@ int main() {
   psform_b->size = 0;
   psform_b->elements = NULL;
 
+  if (psform_a == NULL || psform_b == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	free(psform_a);
+	free(psform_b);
+	exit(EXIT_FAILURE);
+  }
+  
   /* Get operation */
   length = getline(&line, &buf_size, stdin);
   operation = parse_operation(line, length);
@@ -57,6 +60,8 @@ int main() {
   /* Parse two PS form */
   length = getline(&line, &buf_size, stdin);
   if (parse_psform(line, length, psform_a) == -1) {
+	psform_free(psform_a);
+	psform_free(psform_b);
 	puts("Wrong PS form");
 	return -1;
   }
@@ -64,6 +69,8 @@ int main() {
   length = getline(&line, &buf_size, stdin);
   if (parse_psform(line, length, psform_b) == -1) {
 	puts("Wrong PS form");
+	psform_free(psform_a);
+	psform_free(psform_b);
 	return -1;
   }
 

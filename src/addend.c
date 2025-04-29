@@ -1,4 +1,5 @@
 #include <stdlib.h> /* malloc calloc size_t */
+#include <stdio.h> /* fprintf */
 #include <string.h> /* bzero */
 
 #include "addend.h"
@@ -37,6 +38,18 @@ void add_addend(addend_t* leading, addend_t* new) {
   leading->next = new;
 }
 
+/* Free addends list */
+void free_addends_list(addend_t* list) {
+  addend_t* _el;
+	  
+  while (list != NULL) {
+	free_multiplicands_list(list->elements);
+	_el = list;
+	list = list->next;
+	free(_el);
+  }
+}
+
 /* Compare two lists of addends with the same lengths */
 int compare_addends_list(addend_t* a, addend_t* b) {
   /* Run througth all elements in list a, and try to find this
@@ -49,7 +62,12 @@ int compare_addends_list(addend_t* a, addend_t* b) {
   size_t length = get_addends_list_length(a);
   int* indexs = (int*)calloc(length, sizeof(int));
   addend_t* _b = b;
-  int found; 
+  int found;
+
+  if (indexs == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
 
   for (size_t i = 0; i < length; i++) {
 	found = 0;
@@ -68,6 +86,7 @@ int compare_addends_list(addend_t* a, addend_t* b) {
 
 	/* Return 0, if this element from list a, isn't found in list b */
 	if (!found) {
+	  free(indexs);
 	  return 0;
 	}
 	
@@ -81,6 +100,9 @@ int compare_addends_list(addend_t* a, addend_t* b) {
 
 /* Print addends list */
 char* print_addends_list(addend_t* addend) {
+  if (addend == NULL)
+	return NULL;
+  
   char* line = (char*)malloc(1024);
   bzero(line, 1024);
   // size_t length = 1024;
@@ -122,6 +144,11 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b) {
   int constant_a, constant_b, found;
   _b = b;
 
+  if (indexs == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  
   for (size_t i = 0; i < size_a; i++) {
 	a_list = a->elements;
 	a_list_size = get_multiplicans_list_length(a->elements);
@@ -224,6 +251,8 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b) {
 
 	b = b->next;
   }
+
+  free(indexs);
   
   return result;
 }

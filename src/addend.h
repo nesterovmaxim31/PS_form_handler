@@ -22,6 +22,7 @@ addend_t* init_addend(); /* Create new empty addend */
 void add_addend(addend_t*, addend_t*); /* Add new addend to list */
 int compare_addends_list(addend_t*, addend_t*); /* Compare two
 														   addend */
+void free_addends_list(addend_t*);
 size_t get_addends_list_length(addend_t* list); 
 addend_t* copy_addend(addend_t*);
 addend_t* multiply_addends_list(addend_t*, addend_t*);

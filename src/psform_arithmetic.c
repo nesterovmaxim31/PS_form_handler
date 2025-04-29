@@ -1,4 +1,5 @@
 #include <stdlib.h> /* calloc free malloc */
+#include <stdio.h>
 
 #include "psform_arithmetic.h"
 #include "psform.h"
@@ -58,7 +59,9 @@ psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
 	}
 	else {
 	  summed = sum_addends_list(result->elements, addend);
-	  result->elements = summed;
+	  free_addends_list(result->elements);
+	  free_addends_list(addend);
+	  result->elements = summed;	  
 	}
 
 	b_el = b_el->next;
@@ -87,6 +90,12 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
 	return NULL;
 
   result = (psform_t*)malloc(sizeof(psform_t));
+  if (result == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  result->size = 0;
+  result->elements = NULL;
   
   for (size_t i = 0; i < psform_a->size; i++) {
 	/* If dividend is equal to zero, go to the next addend */
@@ -119,9 +128,5 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
 
 
 int psform_compare(psform_t* psform_a, psform_t* psform_b) {
-  /* Compare length */
-  /* if (psform_a->size != psform_b->size) */
-  /* 	return 0; */
-
   return compare_addends_list(psform_a->elements, psform_b->elements);
 }

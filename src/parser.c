@@ -178,8 +178,9 @@ int parse_psform(const char* line, ssize_t length, psform_t* form) {
 	form->size++;
 	ADD_ADDEND(form, addend);
   }
-
-
+  else {
+	free(addend);
+  }
   
   return 0;
 }

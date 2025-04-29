@@ -1,6 +1,6 @@
 #include <stdlib.h> /* malloc calloc free */
 #include <string.h>
-#include <stdio.h>
+#include <stdio.h> /* fprintf */
 
 #include "multiplicand.h"
 
@@ -21,6 +21,11 @@ multiplicand_t* create_var_multiplicand(char name) {
   multiplicand_t* multiplicand;
   multiplicand = (multiplicand_t*)malloc(sizeof(multiplicand_t));
 
+  if (multiplicand == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+
   multiplicand->type = VARIABLE;
   multiplicand->value.name = name;
   multiplicand->next = NULL;
@@ -33,6 +38,11 @@ multiplicand_t* create_con_multiplicand(int value) {
   multiplicand_t* multiplicand;
   multiplicand = (multiplicand_t*)malloc(sizeof(multiplicand_t));
 
+  if (multiplicand == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  
   multiplicand->type = CONSTANT;
   multiplicand->value.value = value;
   multiplicand->next = NULL;
@@ -56,11 +66,13 @@ void free_multiplicands_list(multiplicand_t* leading) {
   if (leading == NULL)
 	return;
   
-  if (leading->next != NULL) {
-	next = leading->next;
-	free(leading);
-	free_multiplicands_list(next);
+  while (leading->next != NULL) {
+	next = leading;
+	leading = leading->next;
+	free(next);
   }
+
+  free(leading);
 }
 
 /* Copy multiplicands list */
@@ -108,9 +120,14 @@ int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b) {
   if (get_multiplicans_list_length(a) != get_multiplicans_list_length(b))
 	return 0;
   
-  size_t length = get_multiplicans_list_length(a);
-  
+  size_t length = get_multiplicans_list_length(a);  
   int* indexs = (int*)calloc(length, sizeof(int));
+
+  if (indexs == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  
   multiplicand_t* _b = b;
   int found; 
 
@@ -130,6 +147,7 @@ int compare_multiplicands_list(multiplicand_t* a, multiplicand_t* b) {
 
 	/* Return 0, if this element from list a, isn't found in list b */
 	if (!found) {
+	  free(indexs);
 	  return 0;
 	}
 	
@@ -182,6 +200,11 @@ multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
 	constant_divisor, constant_dividend;
   _divisor = divisor;
 
+  if (indexs == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  
   /* Handle constants */
   if (dividend->type == CONSTANT) {
 	constant_dividend = dividend->value.value;
@@ -261,6 +284,11 @@ multiplicand_t* multiply_multiplicands_list(multiplicand_t* list,\
   int* indexs = (int*)calloc(mul_length, sizeof(int));
   _mul = mul;
 
+  if (indexs == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  
   while(list != NULL) {
 	if (result == NULL) {
 	  result = create_var_multiplicand(list->value.name);

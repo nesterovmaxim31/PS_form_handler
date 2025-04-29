@@ -25,14 +25,17 @@ int parse_psform(const char*, ssize_t, psform_t*);
 
 
 #define ADD_ADDEND(form, addend)								\
+  multiplicand_t* deleted = NULL;								\
   if (addend->size > 1 && addend->elements->value.value == 1) { \
+	deleted = addend->elements;									\
 	addend->elements = addend->elements->next;					\
+	free(deleted);												\
 	addend->size--;												\
   }																\
   if (form->elements == NULL)									\
 	form->elements = addend;									\
   else															\
-	add_addend(form->elements, addend);
+	add_addend(form->elements, addend);							\
 
 
 #endif
