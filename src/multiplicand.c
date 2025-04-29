@@ -199,7 +199,7 @@ void print_multiplicands_list(multiplicand_t* multiplicand, char* line) {
 multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
 										  multiplicand_t* divisor) {
   size_t divisor_length = get_multiplicans_list_length(divisor);
-  multiplicand_t *result = NULL, *_divisor, *multiplicand;
+  multiplicand_t *result = NULL, *_divisor, *multiplicand, *_delete;
   int *indexs = (int*)calloc(divisor_length, sizeof(int)), found, \
 	constant_divisor, constant_dividend;
   _divisor = divisor;
@@ -233,18 +233,21 @@ multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
 	return NULL;
   }
   
-  else if (constant_dividend  / constant_divisor != 1){
-	multiplicand = create_con_multiplicand(constant_dividend / \
-										   constant_divisor);
-	
-	result = multiplicand;
-  }
 
-	
+  /* Assign constant to result. If constant == 1, then, if
+	 in result would be more multiplicands, this multiplicand would
+	 be deleted*/
+  multiplicand = create_con_multiplicand(constant_dividend / \
+										 constant_divisor);	
+  result = multiplicand;
+  
+
+  /* Run througth all divided's multiplicands */
   while(dividend != NULL) {
 	divisor = _divisor;
 	found = 0;
 
+	/* Run througth all divisor's multiplicands */
 	for (size_t j = 0; j < divisor_length; j++) {
 	  if (dividend->value.name == divisor->value.name && \
 		  !indexs[j]) {
@@ -256,11 +259,15 @@ multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
 	}
 
 	if (!found) {
-	  if (result == NULL) 
-		result = create_var_multiplicand(dividend->value.name);	  
-	  else 
-		add_multiplicand(result, create_var_multiplicand(dividend->	\
+	  add_multiplicand(result, create_var_multiplicand(dividend->	\
 													   value.name));
+
+	  /* Delete constant = 1*/
+	  if (result->type == CONSTANT && result->value.value == 1) {
+		_delete = result;
+		result = result->next;
+		free(_delete);
+	  }
 	}
 	
 	dividend = dividend->next;

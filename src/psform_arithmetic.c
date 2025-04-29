@@ -104,15 +104,18 @@ psform_t* psform_divide(psform_t* psform_a, psform_t* psform_b) {
   }
   result->size = 0;
   result->elements = NULL;
-  
-  for (size_t i = 0; i < psform_a->size; i++) {
+
+  /* Run througth all elements in psform_b, and divid by psform_b */
+  for (size_t i = 0; i < get_addends_list_length(psform_a->elements);\
+	   i++) {
 	/* If dividend is equal to zero, go to the next addend */
 	if (el->elements->type == CONSTANT && \
 		el->elements->value.value == 0) {
 	  el = el->next;
 	  continue;
 	}	  
-	
+
+	/* Divid multiplicands list */
 	divided = divide_multiplicands_list(el->elements, divisor->elements);
 	if (divided == NULL)
 	  return NULL;
