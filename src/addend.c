@@ -259,18 +259,18 @@ addend_t* sum_addends_list(addend_t* a, addend_t* b) {
 
 
 static inline
-multiplicand_t* multiply(addend_t* a, addend_t* b) {	
+multiplicand_t* multiply(multiplicand_t* a, multiplicand_t* b) {	
   if (a == NULL && b == NULL) {								
 	return NULL;													
   } 														
   else if (a == NULL && b != NULL) {						
-	return multiply_multiplicands_list(NULL, b->elements);			
+	return multiply_multiplicands_list(NULL, b);			
   }															
   else if (a != NULL && b == NULL) {						
-	return multiply_multiplicands_list(a->elements, NULL);			
+	return multiply_multiplicands_list(a, NULL);			
   }															
   else {													
-	return multiply_multiplicands_list(a->elements, b->elements);	
+	return multiply_multiplicands_list(a, b);	
   }
 }
 
@@ -280,13 +280,14 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
   int list_element_constant, el_constant;
   sign_t list_element_sign, el_sign;
   addend_t *result = NULL, *new_el;
-  multiplicand_t* list_elements;
+  multiplicand_t *list_elements, *el_elements;
 
   el_sign = el->sign;
+  el_elements = el->elements;
   /* Handle el constant */
-  if (el->elements->type == CONSTANT) {
+  if (el_elements->type == CONSTANT) {
 	el_constant = el->elements->value.value;
-	el->elements = el->elements->next;
+	el_elements = el_elements->next;
   }
   else {
 	el_constant = 1;
@@ -311,32 +312,29 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
 	}
 	
 	/* If constant is equal to 1, then do not add multiplicand */
+	new_el = init_addend();
 	if (list_element_constant * el_constant != 1) {
-	  result = init_addend();
-	  result->elements = create_con_multiplicand(list_element_constant * \
-												 el_constant);
-	  if (list_element_sign != el_sign)
-		result->sign = NEGATIVE;
+	  new_el->elements = create_con_multiplicand(list_element_constant * \
+									   el_constant);
 	}
 
-	
+	/* Handle var-multiplicands */
+	if (new_el->elements != NULL)
+	  add_multiplicand(new_el->elements, multiply(list_elements, \
+												  el_elements));
+	else
+	  new_el->elements = multiply(list_elements, el_elements);
+
+	if (list_element_sign != el_sign)
+	  new_el->sign = NEGATIVE;
+
+	/* If result is empty, than head of a list is a new element*/
 	if (result == NULL) {
-	  result = init_addend();
-	  
-	  if (list_element_sign != el_sign)
-		result->sign = NEGATIVE;  
-
-	  result->elements = multiply(list, el);
+	  result = new_el;
 	}
+	/* Else just add new elements to the end of list */
 	else {
-	  new_el = init_addend();
-
-	  if (new_el->sign != el->sign)
-		new_el->sign = NEGATIVE;
-	  
-	  new_el->elements = multiply(list, el);
 	  add_addend(result, new_el);
-	  result->size++;
 	}
 	  
 	list = list->next;

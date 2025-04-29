@@ -22,7 +22,7 @@ static void psform_print(psform_t* form) {
   }
   else {
 	line = print_addends_list(form->elements);
-	printf("%s\n", line);
+	printf("%s", line);
 	free(line);
   }
 }

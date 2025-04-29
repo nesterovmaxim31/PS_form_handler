@@ -51,7 +51,10 @@ multiplicand_t* create_con_multiplicand(int value) {
 }
 
 /* Add new multiplicand to the tail of this list of multiplicands */
-void add_multiplicand(multiplicand_t* leading, multiplicand_t* new) {  
+void add_multiplicand(multiplicand_t* leading, multiplicand_t* new) {
+  if (leading == NULL)
+	return;
+	
   while (leading->next != NULL) {
 	leading = leading->next;	
   }
