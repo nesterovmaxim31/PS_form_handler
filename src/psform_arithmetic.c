@@ -46,9 +46,17 @@ psform_t* psform_subtract(psform_t* psform_a, psform_t* psform_b) {
 /* Multiply two PS form. Multiply all addends in PS form a for each
    elements in PS form b, then sum. */
 psform_t* psform_multiply(psform_t* psform_a, psform_t* psform_b) {
-  psform_t* result = (psform_t*)malloc(sizeof(psform_t));
+  psform_t* result = NULL;
   addend_t *addend, *a_list = psform_a->elements, *b_el = psform_b->\
 	elements, *summed;
+
+  result = (psform_t*)malloc(sizeof(psform_t));
+  if (result == NULL) {
+	fprintf(stderr, "Unable to allocate memory\n");
+	exit(EXIT_FAILURE);
+  }
+  result->size = 0;
+  result->elements = NULL;
 
   /* */
   for (size_t i = 0; i < psform_b->size; i++) {
