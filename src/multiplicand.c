@@ -253,6 +253,7 @@ multiplicand_t* divide_multiplicands_list(multiplicand_t* dividend,\
 		  !indexs[j]) {
 		indexs[j] = 1;
 		found = 1;
+		break;
 	  }
 
 	  divisor = divisor->next;
