@@ -1,5 +1,5 @@
 dnl Minimal version required (Not tested on older version)
-AC_PREREQ([2.72])
+AC_PREREQ([2.71])
 
 dnl PS form hadler, version 1.0
 AC_INIT([psform_handler],[1.0],[maxgoonfuture@gmail.com])
@@ -45,6 +45,15 @@ AC_ARG_ENABLE([benchmark],
       AC_MSG_ERROR([time utility isn't installed])
    fi],
   [TESTTOOLS="$TESTTOOLS"]
+)
+
+dnl Check for benchmark operation
+AC_ARG_ENABLE([benchmark-operation],
+  [AS_HELP_STRING([--enable-benchmark-operation],
+                  [whether to enable benchmark only
+				  for math operation (default is no)])],
+  [CFLAGS="$CFLAGS -DENABLE_BENCHMARK_OPERATION"],		
+  [CFLAGS="$CFLAGS"]
 )
 
 dnl Check for valgrind

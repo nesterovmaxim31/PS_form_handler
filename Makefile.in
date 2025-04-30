@@ -17,7 +17,7 @@ TESTDIR := test
 TESTS := ./$(TESTDIR)/input_*.txt
 TESTSOUT := $(subst input,output,$(wildcard ./$(TESTDIR)/input_*.txt))
 
-.PHONY: all clean remake test distclean
+.PHONY: all clean remake test distclean run
 
 # Built executable 
 $(EXE): $(OBJS)
@@ -41,6 +41,10 @@ $(SRCSDIR)/psform_arithmetic.o: psform_arithmetic.c psform_arithmetic.h psform.h
 
 # Rebuild project 
 remake: clean $(EXE)
+
+# Run executable
+run: $(EXE)
+	$(TESTTOOLS) ./$(EXE)	
 
 # Start tests
 test: remake $(TESTSOUT)

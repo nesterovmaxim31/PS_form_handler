@@ -1,5 +1,9 @@
-#include <stdio.h>  /* puts printf fprintf */
+#include <stdio.h>  /* puts printf fprintf fflush */
 #include <stdlib.h> /* size_t malloc free */
+
+#ifdef ENABLE_BENCHMARK_OPERATION
+#include <time.h>
+#endif
 
 #include "psform.h"
 #include "parser.h"
@@ -78,6 +82,12 @@ int main() {
 	return -1;
   }
 
+  /* Benchmark only time of execution operation,
+	 not of all program*/
+#ifdef ENABLE_BENCHMARK_OPERATION
+  float startTime = (float)clock()/CLOCKS_PER_SEC;
+#endif
+  
   /* Perform operation */
   switch (operation) {
   case ADDITION:
@@ -113,6 +123,14 @@ int main() {
 	break;
   }  
 
+  /* Output time of execution operation */
+#ifdef ENABLE_BENCHMARK_OPERATION
+  float endTime = (float)clock()/CLOCKS_PER_SEC;
+  fflush(stdout);
+  fprintf(stderr, "It took %f to perform math operation\n\n", \
+		  endTime - startTime);
+#endif
+  
   /* Free allocated memory */
   free(line);
   psform_free(psform_a);

@@ -103,15 +103,23 @@ char* print_addends_list(addend_t* addend) {
   if (addend == NULL)
 	return NULL;
 
-  /* To store 100 addends with 27 multiplicand in each
-	 is enough 8192 bytes */
-  char* line = (char*)malloc(8192);
-  bzero(line, 8192);
+  size_t line_capacity = 100, length;
+  char* line = (char*)malloc(line_capacity);
+  bzero(line, line_capacity);
   
   if (addend->sign == NEGATIVE)
 	line[0] = '-';
   
   while(addend != NULL) {
+	/* If the length of the string is less than its capacity
+	   by less than 1024, realloc. */
+	length = strlen(line);
+	if ((length + 1024) >= line_capacity) {
+	  line_capacity *= 2;
+	  line = (char*)realloc(line, line_capacity);
+	  bzero(line + length, line_capacity - length);
+	}
+	
 	print_multiplicands_list(addend->elements, line);
 	if (addend->next != NULL && addend->next->sign == POSITIVE)
 	  strcat(line, " + ");
