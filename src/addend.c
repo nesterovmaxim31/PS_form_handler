@@ -103,7 +103,7 @@ char* print_addends_list(addend_t* addend) {
   if (addend == NULL)
 	return NULL;
 
-  size_t line_capacity = 100, length;
+  size_t line_capacity = 1024, length;
   char* line = (char*)malloc(line_capacity);
   bzero(line, line_capacity);
   
