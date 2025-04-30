@@ -117,6 +117,12 @@ char* print_addends_list(addend_t* addend) {
 	if ((length + 1024) >= line_capacity) {
 	  line_capacity *= 2;
 	  line = (char*)realloc(line, line_capacity);
+
+	  if (line == NULL) {
+		fprintf(stderr, "Unable to realloc memory\n");
+		exit(EXIT_FAILURE);
+	  }
+	  
 	  bzero(line + length, line_capacity - length);
 	}
 	
