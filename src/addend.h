@@ -11,10 +11,10 @@
 typedef enum {POSITIVE, NEGATIVE} sign_t; 
 
 typedef struct addend_st{
-  sign_t sign;
-  size_t size; /* Amount of multiplicand */
-  multiplicand_t* elements;
-  struct addend_st* next;
+    sign_t sign;
+    size_t size; /* Amount of multiplicand */
+    multiplicand_t* elements;
+    struct addend_st* next;
 } addend_t;
 
 /* function prototype */

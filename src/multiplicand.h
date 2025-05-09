@@ -9,16 +9,16 @@ typedef enum  {CONSTANT, VARIABLE} multiplicand_type;
 /* If multiplicand is variable, it's value is a variable's name,
    if multiplicand is constant, it's value is a constant's value */
 typedef union {
-  char name;
-  int value;
+    char name;
+    int value;
 } multiplicand_value_t;
 
 /* Each multiplicand consists of it's value, type and
    pointer to next multiplicand */
 typedef struct multiplicand_st{
-  multiplicand_type type;
-  multiplicand_value_t value;
-  struct multiplicand_st* next;
+    multiplicand_type type;
+    multiplicand_value_t value;
+    struct multiplicand_st* next;
 } multiplicand_t;
 
 /* function prototype */
@@ -30,10 +30,10 @@ multiplicand_t* create_con_multiplicand(int);
 multiplicand_t* copy_multiplicands_list(multiplicand_t*);
 /* Allocate and divide two multiplicands lists */
 multiplicand_t* divide_multiplicands_list(multiplicand_t*,\
-										  multiplicand_t*);
+                                          multiplicand_t*);
 /* Allocate and multiply two multiplicands lists*/
 multiplicand_t* multiply_multiplicands_list(multiplicand_t*,\
-											multiplicand_t*);
+                                            multiplicand_t*);
 
 /* Add new multiplicand in list */ 
 void add_multiplicand(multiplicand_t*, multiplicand_t*);

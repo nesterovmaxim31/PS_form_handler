@@ -5,8 +5,8 @@
 
 /* Each PS form consists of size and pointer to a first addend*/
 typedef struct {
-  size_t size; /* Amount of addends */
-  addend_t* elements;
+    size_t size; /* Amount of addends */
+    addend_t* elements;
 } psform_t;
 
 
