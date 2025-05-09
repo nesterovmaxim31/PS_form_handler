@@ -1,5 +1,6 @@
 #include <stdio.h>  /* puts printf fprintf fflush */
 #include <stdlib.h> /* size_t malloc free */
+#include <sys/types.h> /* ssize_t */
 
 #ifdef ENABLE_BENCHMARK_OPERATION
 #include <time.h>

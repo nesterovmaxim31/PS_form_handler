@@ -29,7 +29,7 @@ AC_ARG_ENABLE([debug],
   [AS_HELP_STRING([--enable-debug],
                   [whether to include debug symbols (default is no)])],
   [CFLAGS="$CFLAGS -g -O0"],
-  [CFLAGS="$CFLAGS -O3"]
+  [CFLAGS="$CFLAGS -O3 -flto"]
 )
 
 dnl Check for test tools

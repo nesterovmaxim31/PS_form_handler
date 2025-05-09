@@ -340,10 +340,12 @@ addend_t* multiply_addends_list(addend_t* list, addend_t* el) {
 
 	/* Handle var-multiplicands */
 	if (new_el->elements != NULL)
-	  add_multiplicand(new_el->elements, multiply(list_elements, \
-												  el_elements));
+	  add_multiplicand(new_el->elements, \
+					   multiply_multiplicands_list(list_elements, \
+												   el_elements));
 	else
-	  new_el->elements = multiply(list_elements, el_elements);
+	  new_el->elements = multiply_multiplicands_list(list_elements, \
+													 el_elements);
 
 	if (list_element_sign != el_sign)
 	  new_el->sign = NEGATIVE;
